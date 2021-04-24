@@ -1,3 +1,134 @@
-.bgimg1 {
-    background-image: url("/images/pexels-sebastian-voortman-189349.jpg");
+#solution {
+    margin-top: 100px;
+    width: 100%;
+    text-align: center;
+    font-size: 54px;
+    line-height: 75px;
+    color: rgb(71, 71, 71);
+}
+
+#solution-value {
+    width: 100%;
+    text-align: center;
+    font-size: 54px;
+    font-weight: 700;
+    color: rgb(71, 71, 71);
+}
+
+#guess {
+    margin-top: 70px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#guess-container {
+    padding: 25px 40px;
+    background: linear-gradient(135deg, rgba(245, 175, 25, 1) 0%, rgba(241, 39, 17, 1) 100%);
+    border-radius: 50px;
+}
+
+#guess-display{
+    text-align: center;
+    font-size: 36px;
+    font-weight: 500;
+    color: rgb(71, 71, 71);
+}
+
+#guess-display-value{
+    display: inline-block;
+}
+
+#guess-form {
+    margin-top: 5px;
+}
+
+#guess-input {
+    text-align: right;
+    background-color: #fff;
+    padding: 3px 10px;
+    border-radius: 10px;
+    border: 2px solid rgb(71, 71, 71);
+}
+
+#guess-input:focus {
+    border: 2px solid rgb(190, 190, 190);
+}
+
+#guess-input-submit {
+    background-color: #fff;
+    padding: 3px 10px;
+    border-radius: 10px;
+    border: 2px solid rgb(71, 71, 71);
+}
+
+#guess-input-submit:hover {
+    background-color: rgb(202, 202, 202);
+}
+
+#guess-input-submit:focus {
+    background-color: rgb(153, 153, 153);
+}
+
+/* hide increment/decrement buttons */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+#players {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.player {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    margin: 50px;
+    background: linear-gradient(135deg, #36D1DC 0%, #5B86E5 100%);
+    border-radius: 50px;
+}
+
+.player-guess {
+    position: absolute;
+    top: 10%;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    font-size: 48px;
+    font-weight: 600;
+    letter-spacing: 4px;
+    color: #d6d6d6;
+}
+
+.player-name {
+    position: absolute;
+    top: 45%;
+    left: 0%;
+    width: 100%;
+    text-align: center;
+    font-size: 36px;
+    font-weight: 300;
+    letter-spacing: 2px;
+    line-height: 40px;
+    color: #d6d6d6;
+}
+
+.player-points {
+    position: absolute;
+    top: 70%;
+    left: 0%;
+    width: 100%;
+    text-align: center;
+    font-size: 36px;
+    font-weight: 300;
+    letter-spacing: 2px;
+    line-height: 40px;
+    color: #d6d6d6;
+
 }
