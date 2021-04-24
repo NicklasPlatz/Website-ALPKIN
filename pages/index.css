@@ -1,78 +1,11 @@
-
-body, html {
-    height: 100%;
-    margin: 0;
-    font: 400 16px/1.8 "Lato", sans-serif;
-    color: rgb(167, 167, 167);
-}
-
-.bgimg {
-    position: relative;
-    opacity: 1;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
+.bgimg1 {
     background-image: url("/images/pexels-johannes-plenio-1123445.jpg");
-    height: 100%;
-}
-  
-.caption {
-    position: absolute;
-    left: 0;
-    top: 50%;
-    width: 100%;
-    text-align: center;
-}
-  
-.caption span.title {
-    opacity: 0.75;
-    color: rgb(255, 255, 255);
-    padding: 12px;
-    font-size: 28px;
-    font-weight: 600;
-    letter-spacing: 10px;
-    line-height: 50px;
 }
 
-.caption span.subtitle {
-    color: #d6d6d6;
-    padding: 12px;
-    font-size: 18px;
-    font-weight: 600;
-    letter-spacing: 10px;
-    line-height: 40px;
+.bgimg2 {
+    background-image: url("/images/pexels-sebastian-voortman-189349.jpg");
 }
 
-
-/* navbar */
-#navbar {
-    overflow: hidden;
-    display: flex;
-    justify-content: center;
-    position: sticky;
+.bgimg3 {
+    background-image: url("/images/pexels-pixabay-258112.jpg");
 }
-
-#navbar-items {
-    width: 30%;
-    margin-top: 10px;
-    display: flex;
-    justify-content: space-around;
-}
-  
-/* Navbar links */
-#navbar-items a {
-    float: left;
-    display: block;
-    color: #d6d6d6;
-    font-size: 18px;
-    font-weight: 600;
-    letter-spacing: 3px;
-    text-align: center;
-    text-decoration: none;
-}
-
-#navbar-items a:hover {
-    color: #FFA500;
-    border-bottom: 2px solid #FFA500;
-}
-  
