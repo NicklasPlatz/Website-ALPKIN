@@ -85,20 +85,28 @@ const handleGuesses = (sock) => (guessesJSON) => {
       let playerGuess = document.createElement('div');
       playerGuess.classList.add('player-guess');
       playerGuess.textContent = val ?? '???';
-      playerCard.appendChild(playerGuess);
       let playerName = document.createElement('div');
       playerName.classList.add('player-name');
       playerName.textContent = key;
-      playerCard.appendChild(playerName);
       let playerPoints = document.createElement('div');
       playerPoints.classList.add('player-points');
       playerPoints.textContent = '...';
+      if(key === sessionStorage.getItem('hostname')){
+        playerCard.classList.add('host');
+        playerGuess.textContent = 'Host';
+      }
+      playerCard.appendChild(playerGuess);
+      playerCard.appendChild(playerName);
       playerCard.appendChild(playerPoints);
-    if(key === sessionStorage.getItem('hostname')){
-      playerCard.classList.add('host');
-    }
     players.appendChild(playerCard);
   });
+}
+
+
+const resize_to_fit = (element) => {
+  if(element.textContent.length > 5){
+    element.style.fontSize = '36px';
+  }
 }
 
 
