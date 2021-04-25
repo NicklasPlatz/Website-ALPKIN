@@ -1,0 +1,84 @@
+<html>
+    <head>
+        <title>Guessing Game</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="./index.css">
+        <link rel="stylesheet" href="/global.css">
+    </head>
+    <body>
+
+        <div id="navbar">
+            <div id="navbar-items">
+                <a href="/pages/">Home</a>
+                <a href="/pages/tools/">Tools</a>
+                <a href="/pages/about/">About</a>
+            </div>
+        </div>
+
+        <div id="lobby">
+            <div id="lobby-display">Join Game</div>
+            <form id="lobby-form">
+                <input class="input" type="text" id="player-input" autocomplete="off" title="Player Name" placeholder="Player Name">
+                <button class="button" id="lobby-input-submit">Join</button>
+            </form>
+        </div>
+
+        <div id="guessingUI">
+            <div id="options">
+
+            </div>
+
+            <div id="host-options" class="host">
+                <div id="host-name">Hostname</div>
+                <button class="button" id="host-apply">Toggle Host</button>
+            </div>
+
+            <div id="solution">
+                Solution:
+                <div id="solution-value">200</div>
+            </div>
+
+            <div id="guess">
+                <div id="guess-container">
+                    <div id="player-controls">
+                        <div id="guess-display">Your Answer</div>
+                        <form id="guess-form">
+                            <input class="input" type="number" id="guess-input" autocomplete="off" title="Your Guess" placeholder="0-9999999">
+                            <button class="button" id="guess-input-submit">Submit</button>
+                        </form>
+                    </div>
+                    <div id="host-controls">
+                        <form id="solution-form">
+                            <label for="solution-input">Enter Solution</label>
+                            <input class="input" type="number" id="solution-input" name="solution-input" autocomplete="off" title="Solution" placeholder="0-9999999">
+                            <button class="button" id="solution-input-submit">Submit Solution</button>
+                        </form>
+                        <button class="button" id="next-round">Next Round</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="players">
+                <div class="player">
+                    <div class="player-guess">300</div>
+                    <div class="player-name">Player1</div>
+                    <div class="player-points">10</div>
+                </div>
+                <div class="player">
+                    <div class="player-guess">500</div>
+                    <div class="player-name">Player2</div>
+                    <div class="player-points">10</div>
+                </div>
+                <div class="player">
+                    <div class="player-guess">400</div>
+                    <div class="player-name">Player3</div>
+                    <div class="player-points">10</div>
+                </div>
+            </div>
+        </div>
+        
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="../../client.js"></script>
+        
+    </body>
+</html>

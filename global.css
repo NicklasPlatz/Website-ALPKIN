@@ -1,0 +1,130 @@
+
+body, html {
+    height: 100%;
+    margin: 0;
+    font: 400 16px/1.8 "Lato", sans-serif;
+    color: rgb(167, 167, 167);
+}
+
+body {
+    overflow: overlay;
+}
+
+.parallax {
+    position: relative;
+    opacity: 1;
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 100%;
+}
+
+.parallax-divider {
+    width: 100%;
+    height: 10px;
+    background-color: #d6d6d6;
+}
+  
+.caption {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 100%;
+    text-align: center;
+    padding: 15px 0px;
+    background-color: rgba(0, 0, 0, .4);
+}
+  
+.caption span.title {
+    opacity: 0.75;
+    color: rgb(255, 255, 255);
+    padding: 12px;
+    font-size: 36px;
+    font-weight: 600;
+    letter-spacing: 10px;
+    line-height: 50px;
+}
+
+.caption span.subtitle {
+    color: #d6d6d6;
+    padding: 12px;
+    font-size: 24px;
+    font-weight: 300;
+    letter-spacing: 6px;
+    line-height: 40px;
+}
+
+
+/* navbar */
+#navbar {
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background-color: rgba(0, 0, 0, .75);
+    z-index: 10;
+}
+
+#navbar-items {
+    width: 30%;
+    height: 50px;
+    align-items: baseline;
+    display: flex;
+    justify-content: space-around;
+}
+  
+/* Navbar links */
+#navbar-items a {
+    float: left;
+    display: block;
+    margin-top: 10px;
+    color: #d6d6d6;
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-align: center;
+    text-decoration: none;
+}
+
+#navbar-items a:hover {
+    color: #FFA500;
+    border-bottom: 2px solid #FFA500;
+}
+
+#navbar-items a.selected {
+    color: #FFA500;
+    border-bottom: 2px solid #FFA500;
+}
+  
+/* width */
+::-webkit-scrollbar {
+    width: 14px;
+    height: 18px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background-color: transparent;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background-clip: padding-box;
+    border: 2px solid rgba(0, 0, 0, 0);
+    border-radius: 10px;
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(0, 0, 0, 1);
+}
+
+
+.content {
+    padding: 10px;
+    color: #808080;
+}

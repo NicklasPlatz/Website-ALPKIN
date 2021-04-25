@@ -1,39 +1,146 @@
-var port = process.env.PORT || 3000,
-    http = require('http'),
-    fs = require('fs'),
-    html = fs.readFileSync('index.html');
+const http = require('http');
+const express = require('express');
+const socketio = require('socket.io');
+const createGame = require('./guessing');
+const { join } = require('path');
 
-var log = function(entry) {
-    fs.appendFileSync('/tmp/sample-app.log', new Date().toISOString() + ' - ' + entry + '\n');
-};
+const app = express();
 
-var server = http.createServer(function (req, res) {
-    if (req.method === 'POST') {
-        var body = '';
+app.use(express.static(`${__dirname}/../client`));
 
-        req.on('data', function(chunk) {
-            body += chunk;
-        });
+const server = http.createServer(app);
+const io = socketio(server);
+const { resetPlayers, joinGame, makeGuess, getGuesses, removePlayer, evaluateWinner, getPoints, applyForHost, getHostName, nextRound, submitSolution, getSolution } = createGame();
 
-        req.on('end', function() {
-            if (req.url === '/') {
-                log('Received message: ' + body);
-            } else if (req.url = '/scheduled') {
-                log('Received task ' + req.headers['x-aws-sqsd-taskname'] + ' scheduled at ' + req.headers['x-aws-sqsd-scheduled-at']);
-            }
 
-            res.writeHead(200, 'OK', {'Content-Type': 'text/plain'});
-            res.end();
-        });
-    } else {
-        res.writeHead(200);
-        res.write(html);
-        res.end();
+
+
+const joinGuessingGame = (sock) => (playerName) => {
+
+  if(playerName === 'ResetGame'){
+    resetPlayers();
+    io.to('guessingGame').emit('reset');
+    return;
+  }
+
+  const joined = joinGame(sock.id, playerName);
+  console.log(joined);
+  if(joined){
+    sock.join('guessingGame');
+    io.to(sock.id).emit('joined', playerName);
+  }else{
+    console.log("already joined");
+    io.to(sock.id).emit('joined', '');
+  } 
+
+  let guesses = getGuesses();
+  io.to('guessingGame').emit('guesses', JSON.stringify([...guesses]));
+  let points = getPoints();
+  io.to('guessingGame').emit('points', JSON.stringify([...points]));
+  let host = getHostName();
+  io.to('guessingGame').emit('host', host);
+  let solution = getSolution();
+  io.to('guessingGame').emit('solution', solution);
+}
+
+
+
+
+const guessSubmit = (sock) => (value) => {
+
+  if(makeGuess(sock, value)){
+
+    let guesses = getGuesses();
+    io.to('guessingGame').emit('guesses', JSON.stringify([...guesses]));
+    let winner = evaluateWinner();
+    if(winner !== null){
+      io.to('guessingGame').emit('winner', JSON.stringify(winner));
     }
+    let points = getPoints();
+    io.to('guessingGame').emit('points', JSON.stringify([...points]));
+    let solution = getSolution();
+    io.to('guessingGame').emit('solution', solution);
+  }
+}
+
+
+
+const applyHost = (sock) => () => {
+  let success = applyForHost(sock.id);
+  if(success){
+    let host = getHostName();
+    io.to('guessingGame').emit('host', host);
+    let solution = getSolution();
+    io.to('guessingGame').emit('solution', solution);
+    let guesses = getGuesses();
+    io.to('guessingGame').emit('guesses', JSON.stringify([...guesses]));
+    let points = getPoints();
+    io.to('guessingGame').emit('points', JSON.stringify([...points]));
+  }
+}
+
+
+
+const startNextRound = (sock) => () => {
+  let success = nextRound(sock.id);
+  if(success){
+    let solution = getSolution();
+    io.to('guessingGame').emit('solution', solution);
+    let guesses = getGuesses();
+    io.to('guessingGame').emit('guesses', JSON.stringify([...guesses]));
+    let points = getPoints();
+    io.to('guessingGame').emit('points', JSON.stringify([...points]));
+  }
+}
+
+
+
+const submitNewSolution = (sock) => (newSol) => {
+  let success = submitSolution(sock.id, newSol);
+  if(success){
+    let solution = getSolution();
+    io.to('guessingGame').emit('solution', solution);
+    let guesses = getGuesses();
+    io.to('guessingGame').emit('guesses', JSON.stringify([...guesses]));
+    let points = getPoints();
+    io.to('guessingGame').emit('points', JSON.stringify([...points]));
+  }
+}
+
+
+
+io.on('connection', (sock) => {
+  console.log('new connection');
+  io.to(sock.id).emit('message', 'You are connected');
+
+  sock.on('message', (text) => io.emit('message', text));
+
+  sock.on('joinGuessingGame', joinGuessingGame(sock));
+
+  sock.on('guessSubmit', guessSubmit(sock));
+
+  sock.on('solutionSubmit', submitNewSolution(sock));
+
+  sock.on('nextRound', startNextRound(sock));
+
+  sock.on('applyHost', applyHost(sock));
+  
+  sock.on('disconnect', () => {
+    removePlayer(sock.id);
+    let solution = getSolution();
+    io.to('guessingGame').emit('solution', solution);
+    let guesses = getGuesses();
+    io.to('guessingGame').emit('guesses', JSON.stringify([...guesses]));
+    let points = getPoints();
+    io.to('guessingGame').emit('points', JSON.stringify([...points]));
+  });
+  
 });
 
-// Listen on port 3000, IP defaults to 127.0.0.1
-server.listen(port);
-
-// Put a friendly message on the terminal
-console.log('Server running at http://127.0.0.1:' + port + '/');
+server.on('error', (err) => {
+  console.error(err);
+});
+ 
+server.listen(8080, () => {
+  console.log('server is ready');
+});
