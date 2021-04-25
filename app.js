@@ -2,11 +2,10 @@ const http = require('http');
 const express = require('express');
 const socketio = require('socket.io');
 const createGame = require('./guessing');
-const { join } = require('path');
 
 const app = express();
 
-app.use(express.static(`${__dirname}/../client`));
+app.use(express.static(`${__dirname}`));
 
 const server = http.createServer(app);
 const io = socketio(server);
