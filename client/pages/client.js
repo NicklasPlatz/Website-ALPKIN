@@ -11,6 +11,16 @@ const joinGame = (sock) => (e) => {
   }
 };
 
+
+
+const applyHost = (sock) => (e) => {
+  e.preventDefault();
+
+  sock.emit('applyHost');
+}
+
+
+
 const onValueSubmitted = (sock) => (e) => {
     e.preventDefault();
 
@@ -19,10 +29,28 @@ const onValueSubmitted = (sock) => (e) => {
     input.value = '';
     
     if(value != ''){
-      playerValue = sessionStorage.getItem("playerName");
-      sock.emit('guessSubmit', playerValue, value);
+      sock.emit('guessSubmit', value);
     }
 };
+
+const onSolutionSubmitted = (sock) => (e) => {
+  e.preventDefault();
+
+  const input = document.querySelector('#solution-input');
+  const value = input.value;
+  input.value = '';
+  
+  if(value != ''){
+    sock.emit('solutionSubmit', value);
+  }
+};
+
+
+
+const nextRound = (sock) => (e) => {
+  e.preventDefault();
+  sock.emit('nextRound');
+}
 
 
 
@@ -64,8 +92,11 @@ const handleGuesses = (sock) => (guessesJSON) => {
       playerCard.appendChild(playerName);
       let playerPoints = document.createElement('div');
       playerPoints.classList.add('player-points');
-      playerPoints.textContent = 12;
+      playerPoints.textContent = '...';
       playerCard.appendChild(playerPoints);
+    if(key === sessionStorage.getItem('hostname')){
+      playerCard.classList.add('host');
+    }
     players.appendChild(playerCard);
   });
 }
@@ -101,6 +132,29 @@ const handleReset = (sock) => () => {
 }
 
 
+const handleHost = (sock) => (host) => {
+  let hostEl = document.getElementById('host-name');
+  let hostname = host === null ? "..." : host;
+  hostEl.innerHTML = 'Host: '+hostname;
+  sessionStorage.setItem('hostname', hostname);
+  let playerName = sessionStorage.getItem('playerName');
+  if(playerName === hostname){
+    document.getElementById('host-controls').style.display = "flex";
+    document.getElementById('player-controls').style.display = "none";
+  }else{
+    document.getElementById('player-controls').style.display = "flex";
+    document.getElementById('host-controls').style.display = "none";
+  }
+  //host === null ? hostEl.classList.add('activeHost') : hostEl.classList.remove('activeHost') ;
+}
+
+
+
+const handleSolution = (sock) => (sol) => {
+  let solEl = document.getElementById('solution-value');
+  solEl.innerHTML = sol;
+}
+
 
 (() => {
 
@@ -112,9 +166,13 @@ const handleReset = (sock) => () => {
   sock.on('winner', handleWinner(sock));
   sock.on('points', handlePoints(sock));
   sock.on('reset', handleReset(sock));
+  sock.on('host', handleHost(sock));
+  sock.on('solution', handleSolution(sock));
   document.querySelector('#lobby-form').addEventListener('submit', joinGame(sock));
   document.querySelector('#guess-form').addEventListener('submit', onValueSubmitted(sock));
-
+  document.querySelector('#solution-form').addEventListener('submit', onSolutionSubmitted(sock));
+  document.getElementById('next-round').addEventListener('click', nextRound(sock));
+  document.getElementById('host-apply').addEventListener('click', applyHost(sock));
 })();
 
 

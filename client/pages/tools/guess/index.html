@@ -18,24 +18,43 @@
         <div id="lobby">
             <div id="lobby-display">Join Game</div>
             <form id="lobby-form">
-                <input type="text" id="player-input" autocomplete="off" title="Player Name" placeholder="Player Name">
-                <button id="lobby-input-submit">Join</button>
+                <input class="input" type="text" id="player-input" autocomplete="off" title="Player Name" placeholder="Player Name">
+                <button class="button" id="lobby-input-submit">Join</button>
             </form>
         </div>
 
         <div id="guessingUI">
+            <div id="options">
+
+            </div>
+
+            <div id="host-options" class="host">
+                <div id="host-name">Hostname</div>
+                <button class="button" id="host-apply">Toggle Host</button>
+            </div>
+
             <div id="solution">
-                Antwort:
+                Solution:
                 <div id="solution-value">200</div>
             </div>
 
             <div id="guess">
                 <div id="guess-container">
-                    <div id="guess-display">Your Answer</div>
-                    <form id="guess-form">
-                        <input type="number" id="guess-input" autocomplete="off" title="Your Guess" placeholder="0-9999999">
-                        <button id="guess-input-submit">Submit</button>
-                    </form>
+                    <div id="player-controls">
+                        <div id="guess-display">Your Answer</div>
+                        <form id="guess-form">
+                            <input class="input" type="number" id="guess-input" autocomplete="off" title="Your Guess" placeholder="0-9999999">
+                            <button class="button" id="guess-input-submit">Submit</button>
+                        </form>
+                    </div>
+                    <div id="host-controls">
+                        <form id="solution-form">
+                            <label for="solution-input">Enter Solution</label>
+                            <input class="input" type="number" id="solution-input" name="solution-input" autocomplete="off" title="Solution" placeholder="0-9999999">
+                            <button class="button" id="solution-input-submit">Submit Solution</button>
+                        </form>
+                        <button class="button" id="next-round">Next Round</button>
+                    </div>
                 </div>
             </div>
 

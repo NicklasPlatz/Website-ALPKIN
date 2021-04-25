@@ -113,7 +113,7 @@ button:focus {
     margin-top: 5px;
 }
 
-#guess-input {
+.input {
     text-align: right;
     background-color: #fff;
     padding: 3px 10px;
@@ -121,22 +121,22 @@ button:focus {
     border: 2px solid rgb(71, 71, 71);
 }
 
-#guess-input:focus {
+.input:focus {
     border: 2px solid rgb(190, 190, 190);
 }
 
-#guess-input-submit {
+.button {
     background-color: #fff;
     padding: 3px 10px;
     border-radius: 10px;
     border: 2px solid rgb(71, 71, 71);
 }
 
-#guess-input-submit:hover {
+.button:hover {
     background-color: rgb(202, 202, 202);
 }
 
-#guess-input-submit:focus {
+.button:focus {
     background-color: rgb(153, 153, 153);
 }
 
@@ -190,6 +190,9 @@ input::-webkit-inner-spin-button {
     letter-spacing: 2px;
     line-height: 40px;
     color: #d6d6d6;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
 }
 
 .player-points {
@@ -203,4 +206,51 @@ input::-webkit-inner-spin-button {
     letter-spacing: 2px;
     line-height: 40px;
     color: #d6d6d6;
+}
+
+
+#host-options {
+    position: absolute;
+    top: 60px;
+    right: 20px;
+    font-size: 20px;
+    border-radius: 50px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 200px;
+}
+
+#host-name {
+    width: 100%;
+    text-align: center;
+    font-size: 18px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+#host-controls, #player-controls {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.host {
+    background: linear-gradient(135deg, #727272 0%, #3b3b3b 100%);
+}
+
+#solution-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+    color: rgb(71, 71, 71);
+    font-size: 48px;
+}
+
+#solution-input-submit {
+    margin-top: 5px;
 }

@@ -10,7 +10,7 @@ app.use(express.static(`${__dirname}/../client`));
 
 const server = http.createServer(app);
 const io = socketio(server);
-const { resetGuesses, joinGame, makeGuess, getGuesses, removePlayer, evaluateWinner, getPoints } = createGame();
+const { resetPlayers, joinGame, makeGuess, getGuesses, removePlayer, evaluateWinner, getPoints, applyForHost, getHostName, nextRound, submitSolution, getSolution } = createGame();
 
 
 
@@ -18,7 +18,7 @@ const { resetGuesses, joinGame, makeGuess, getGuesses, removePlayer, evaluateWin
 const joinGuessingGame = (sock) => (playerName) => {
 
   if(playerName === 'ResetGame'){
-    resetGuesses();
+    resetPlayers();
     io.to('guessingGame').emit('reset');
     return;
   }
@@ -37,25 +37,75 @@ const joinGuessingGame = (sock) => (playerName) => {
   io.to('guessingGame').emit('guesses', JSON.stringify([...guesses]));
   let points = getPoints();
   io.to('guessingGame').emit('points', JSON.stringify([...points]));
+  let host = getHostName();
+  io.to('guessingGame').emit('host', host);
+  let solution = getSolution();
+  io.to('guessingGame').emit('solution', solution);
 }
 
 
 
 
-const guessSubmit = (sock) => (player, value) => {
-  makeGuess(player, value);
-  let guesses = getGuesses();
-  io.to('guessingGame').emit('guesses', JSON.stringify([...guesses]));
-  let points = getPoints();
-  io.to('guessingGame').emit('points', JSON.stringify([...points]));
-  let winner = evaluateWinner();
-  if(winner !== null){
-    io.to('guessingGame').emit('winner', JSON.stringify(winner));
+const guessSubmit = (sock) => (value) => {
+
+  if(makeGuess(sock, value)){
+
+    let guesses = getGuesses();
+    io.to('guessingGame').emit('guesses', JSON.stringify([...guesses]));
+    let winner = evaluateWinner();
+    if(winner !== null){
+      io.to('guessingGame').emit('winner', JSON.stringify(winner));
+    }
+    let points = getPoints();
+    io.to('guessingGame').emit('points', JSON.stringify([...points]));
+    let solution = getSolution();
+    io.to('guessingGame').emit('solution', solution);
+  }
+}
+
+
+
+const applyHost = (sock) => () => {
+  let success = applyForHost(sock.id);
+  if(success){
+    let host = getHostName();
+    io.to('guessingGame').emit('host', host);
+    let solution = getSolution();
+    io.to('guessingGame').emit('solution', solution);
+    let guesses = getGuesses();
+    io.to('guessingGame').emit('guesses', JSON.stringify([...guesses]));
     let points = getPoints();
     io.to('guessingGame').emit('points', JSON.stringify([...points]));
   }
 }
 
+
+
+const startNextRound = (sock) => () => {
+  let success = nextRound(sock.id);
+  if(success){
+    let solution = getSolution();
+    io.to('guessingGame').emit('solution', solution);
+    let guesses = getGuesses();
+    io.to('guessingGame').emit('guesses', JSON.stringify([...guesses]));
+    let points = getPoints();
+    io.to('guessingGame').emit('points', JSON.stringify([...points]));
+  }
+}
+
+
+
+const submitNewSolution = (sock) => (newSol) => {
+  let success = submitSolution(sock.id, newSol);
+  if(success){
+    let solution = getSolution();
+    io.to('guessingGame').emit('solution', solution);
+    let guesses = getGuesses();
+    io.to('guessingGame').emit('guesses', JSON.stringify([...guesses]));
+    let points = getPoints();
+    io.to('guessingGame').emit('points', JSON.stringify([...points]));
+  }
+}
 
 
 
@@ -68,9 +118,17 @@ io.on('connection', (sock) => {
   sock.on('joinGuessingGame', joinGuessingGame(sock));
 
   sock.on('guessSubmit', guessSubmit(sock));
+
+  sock.on('solutionSubmit', submitNewSolution(sock));
+
+  sock.on('nextRound', startNextRound(sock));
+
+  sock.on('applyHost', applyHost(sock));
   
   sock.on('disconnect', () => {
     removePlayer(sock.id);
+    let solution = getSolution();
+    io.to('guessingGame').emit('solution', solution);
     let guesses = getGuesses();
     io.to('guessingGame').emit('guesses', JSON.stringify([...guesses]));
     let points = getPoints();

@@ -3,11 +3,13 @@ const createGame = () => {
     let players = new Map();
     let guesses = new Map();
     let points = new Map();
-    let solution = 12;
+    let host = null;
+    let solution = null;
+    let roundFinished = false;
     
 
 
-    const resetGuesses = () => {
+    const resetPlayers = () => {
         guesses.clear();
         players.clear();
         points.clear();
@@ -15,8 +17,15 @@ const createGame = () => {
 
     
 
-    const makeGuess = (player, value) => {
-        return guesses.set(player, value);
+    const makeGuess = (sock, value) => {
+        if(roundFinished || solution === null || sock.id === host){
+            return false;
+        }
+        let player = players.get(sock.id);
+        if(player !== undefined){
+            guesses.set(player, value);
+            return true;
+        }
     }
 
 
@@ -35,14 +44,9 @@ const createGame = () => {
 
     const getGuesses = () => {
         let guessesTemp = new Map();
-        let ready = true;
+        
         guesses.forEach((val, key, map) => {
-            if(val === null){
-                ready = false;
-            }
-        });
-        guesses.forEach((val, key, map) => {
-            guessesTemp.set(key, ready ? val : (val === null ? '...' : '???'));
+            guessesTemp.set(key, isReady() ? val : (val === null ? '...' : '???'));
         });
         return guessesTemp;
     }
@@ -50,17 +54,9 @@ const createGame = () => {
 
 
     const evaluateWinner = () => {
-        let ready = true;
-        guesses.forEach((val, key, map) => {
-            if(val === null){
-                ready = false;
-            }
-        });
-        if(!ready){
-            console.log('return');
+        if(!isReady()){
             return null;
         }
-        console.log('no return');
         let winnerNames = [];
         let smallestDer = null;
 
@@ -77,6 +73,7 @@ const createGame = () => {
         winnerNames.forEach(winnerName => {
             addPoints(winnerName, 1);
         });
+        roundFinished = true;
         return winnerNames;
     }
 
@@ -103,12 +100,85 @@ const createGame = () => {
         let player = players.get(socketID);
         if(player !== undefined){
             guesses.delete(player);
+            points.delete(player);
             players.delete(socketID);
+        }
+        if(socketID === host){
+            host = null;
         }
     }
 
+
+
+    const applyForHost = (socketID)  => {
+        if(host === null){
+            host = socketID;
+            return true;
+        }
+        if(host === socketID){
+            host = null;
+            nextRound();
+            return true;
+        }
+        return false;
+    }
+
+
+
+    const getHostName = () => {
+        let hostname = players.get(host);
+        if(hostname === undefined){
+            hostname = '';
+        }
+        return hostname;
+    }
+
+
+    const submitSolution = (socketID, val) => {
+        if(roundFinished || host !== socketID){
+            return false;
+        }
+        solution = val;
+        resetGuesses();
+        return true;
+    }
+
+
+    const nextRound = (socketID) => {
+        if(host !== socketID){
+            return false;
+        }
+        solution = null;
+        resetGuesses();
+        roundFinished = false;
+        return true;
+    }
+
+
+    const resetGuesses = () => {
+        guesses.forEach((val, key, map) => {
+            guesses.set(key, null);
+        });
+    }
+
+    const getSolution = () => {
+        return isReady() ? solution : (solution === null ? '...' : '???');
+    }
+
+
+    const isReady = () => {
+        let ready = true;
+        let hostname = getHostName();
+        guesses.forEach((val, key, map) => {
+            if(val === null && key !== hostname){
+                ready = false;
+            }
+        });
+        return ready;
+    }
+
     return {
-        resetGuesses, makeGuess, joinGame, getGuesses, removePlayer, evaluateWinner, getPoints
+        resetPlayers, makeGuess, joinGame, getGuesses, removePlayer, evaluateWinner, getPoints, applyForHost, getHostName, submitSolution, nextRound, getSolution
     };
 };
 
